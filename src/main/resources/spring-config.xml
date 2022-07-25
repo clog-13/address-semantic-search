@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+        http://code.alibabatech.com/schema/dubbo dubbo.xsd"
+	default-autowire="no">
+	<!-- 
+		xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context" 
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+	-->
+
+	<import resource="datasource-config.xml" />
+
+	<dubbo:application name="address-similarity" />
+	<dubbo:protocol name="rest" server="jetty" host="127.0.0.1" port="8000" contextpath="address"
+		extension="com.alibaba.dubbo.rpc.protocol.rest.support.LoggingFilter" />
+	<dubbo:service interface="com.rrs.rd.address.demo.HttpDemoService" ref="demoService" 
+		register="false" protocol="rest" />
+	<bean id="demoService" class="com.rrs.rd.address.demo.HttpDemoServiceImpl" init-method="init">
+		<property name="computer" ref="computer" />
+		<property name="persister" ref="persister" />
+	</bean>
+	
+	<bean id="computer" class="com.rrs.rd.address.similarity.SimilarityComputer">
+		<property name="interpreter" ref="interpreter" />
+		<property name="cacheFolder" value="${cache.path}" />
+		<property name="cacheVectorsInMemory" value="${cache.vectors.in.memory}" />
+	</bean>
+	<bean id="interpreter" class="com.rrs.rd.address.interpret.AddressInterpreter">
+		<property name="persister" ref="persister" />
+		<property name="termIndex" ref="termIndex" />
+	</bean>
+	<bean id="termIndex" class="com.rrs.rd.address.index.TermIndexBuilder">
+		<constructor-arg index="0" ref="persister" />
+		<constructor-arg index="1">
+			<list>
+				<!-- JD, Tmall -->
+				<value>其它区</value>
+				<value>其他地区</value>
+				<value>其它地区</value>
+				<value>全境</value>
+				<value>城区</value>
+				<value>城区以内</value>
+				<value>城区以外</value>
+				<value>郊区</value>
+				<value>县城内</value>
+				<value>内环以内</value>
+				<value>开发区</value>
+				<value>经济开发区</value>
+				<value>经济技术开发区</value>
+				<!-- ehaier (来自TMall或HP) -->
+				<value>省直辖</value>
+				<value>省直辖市县</value>
+				<!-- 其他 -->
+				<value>地区</value>
+				<value>市区</value>
+			</list>
+		</constructor-arg>
+	</bean>
+	<bean id="persister" class="com.rrs.rd.address.persist.AddressPersister">
+		<property name="addressDao" ref="addressDao" />
+		<property name="regionDao" ref="regionDao" />
+	</bean>
+	
+	<!-- DAOs -->
+	<bean id="addressDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.rrs.rd.address.persist.dao.AddressDao" />
+		<!-- property name="sqlSessionTemplate" ref="sqlSession" / -->
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+	<bean id="regionDao"  class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.rrs.rd.address.persist.dao.RegionDao" />
+		<!-- property name="sqlSessionTemplate" ref="sqlSession" / -->
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+	
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="mapperLocations" value="classpath:sql-mapper/*Mapper.xml" />
+		<property name="dataSource" ref="datasource" />
+		<property name="typeHandlers">
+			<array>
+				<bean class="com.rrs.common.dao.ListOnSimicolonSeparatedStringColumnTypeHandler" />
+				<bean class="com.rrs.rd.address.persist.dao.RegionTypeTypeHandler" />
+			</array>
+		</property>
+	</bean>
+	
+	<!-- bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+	    <constructor-arg index="0" ref="sqlSessionFactory" />
+	    <constructor-arg index="1" value="BATCH" />
+	</bean>
+	<tx:annotation-driven transaction-manager="txManager"/>
+	<bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="datasource"/>
+	</bean -->
+</beans>

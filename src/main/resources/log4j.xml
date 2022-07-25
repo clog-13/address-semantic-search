@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+	<appender name="console" class="org.apache.log4j.ConsoleAppender">  
+		<layout class="org.apache.log4j.PatternLayout">  
+			<param name="ConversionPattern" value="%m%n" />
+		</layout>  
+	</appender>  
+    <appender name="file" class="org.apache.log4j.RollingFileAppender">  
+        <param name="File" value="log/match.log" />
+        <param name="Append" value="true" />
+        <param name="MaxBackupIndex" value="10" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%m%n" />
+        </layout>
+    </appender>
+    <appender name="regression" class="org.apache.log4j.RollingFileAppender">
+        <param name="File" value="log/regression.log" />
+        <param name="Append" value="true" />
+        <param name="MaxBackupIndex" value="10" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%m%n" />
+        </layout>
+    </appender>
+    <appender name="extown" class="org.apache.log4j.RollingFileAppender">
+        <param name="File" value="log/extract-town.log" />
+        <param name="Append" value="true" />
+        <param name="MaxBackupIndex" value="10" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%m%n" />
+        </layout>
+    </appender>
+ 
+	<root>
+		<level value="INFO" />
+		<appender-ref ref="file" />
+	</root>
+
+	<logger name="com.rrs.rd.address.demo" additivity="false">
+        <level value="ERROR"/>
+        <appender-ref ref="file"/>
+    </logger>
+    <logger name="com.alibaba.dubbo.rpc.protocol.rest" additivity="false">
+        <level value="ERROR"/>
+        <appender-ref ref="file"/>
+    </logger>
+    <logger name="com.rrs.rd.address.misc" additivity="false">
+        <level value="info"/>
+        <appender-ref ref="file"/>
+    </logger>
+    <logger name="com.rrs.rd.address.misc.RegionCrawlerForTmall" additivity="false">
+        <level value="debug"/>
+        <appender-ref ref="console"/>
+    </logger>
+    <logger name="com.rrs.rd.address.test" additivity="false">
+        <level value="debug"/>
+        <appender-ref ref="console"/>
+    </logger>
+    <logger name="com.rrs.rd.address.ExtractTown" additivity="false">
+        <level value="debug"/>
+        <appender-ref ref="extown"/>
+    </logger>
+</log4j:configuration>

@@ -1,0 +1,10 @@
+<html>
+<head>
+<title>Search similar address</title>
+<style> body, pre { font-size:14px; } </style>
+</head>
+<body style="padding:10px;">
+#if($ex && $ex.message) <span style="color:red; font-size:16px;">$!{ex.message}</span> #end
+#if($ex)<pre>$utils.stackTrace($ex)</pre>#end
+</body>
+</html>
