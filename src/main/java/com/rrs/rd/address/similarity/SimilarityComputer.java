@@ -59,9 +59,6 @@ import com.rrs.rd.address.utils.StringUtil;
  * <strong>使用相似度搜索相似地址的运行机制</strong>：<br />
  * 1. TODO
  * </p>
- * 
- * @author Richie 刘志斌 yudi@sina.com
- * 2016年9月21日
  */
 public class SimilarityComputer {
 	private final static Logger LOG = LoggerFactory.getLogger(SimilarityComputer.class);
@@ -84,23 +81,71 @@ public class SimilarityComputer {
 	private static Map<String, Map<String, Double>> IDF_CACHE = new HashMap<String, Map<String, Double>>();
 	
 	public long timeBoost=0;
-	
+
+
 	/**
-	 * 分词，设置词条权重。
-	 * @param addresses
-	 * @return
+	 * 搜索相似地址。
+	 * @param addressText 详细地址文本，开头部分必须包含省、市、区。
+	 * @param topN 返回多少条最相似地址。
 	 */
-	public List<Document> analyse(List<AddressEntity> addresses){
-		if(addresses==null || addresses.isEmpty()) return null;
+	public Query findSimilarAddress(String addressText, int topN, boolean explain){
+		Query query = new Query(topN); 
 		
-		List<Document> docs = new ArrayList<Document>(addresses.size());
-		for(AddressEntity addr : addresses){
-			docs.add(analyse(addr));
+		//解析地址
+		if(addressText==null || addressText.trim().isEmpty())
+			throw new IllegalArgumentException("Null or empty address text! Please provider a valid address.");
+		AddressEntity queryAddr = interpreter.interpret(addressText);
+		if(queryAddr==null){
+			LOG.warn("[addr] [find-similar] [addr-err] null << " + addressText);
+			throw new RuntimeException("Can't interpret address!");
+		}
+		if(!queryAddr.hasProvince() || !queryAddr.hasCity() || !queryAddr.hasDistrict()){
+			LOG.warn("[addr] [find-similar] [addr-err] "
+					+ (queryAddr.hasProvince() ? queryAddr.getProvince().getName() : "X") + "-"
+					+ (queryAddr.hasCity() ? queryAddr.getCity().getName() : "X") + "-"
+					+ (queryAddr.hasDistrict() ? queryAddr.getDistrict().getName() : "X")
+					+ " << " + addressText);
+			throw new RuntimeException("Can't interpret address, invalid province, city or county name!");
 		}
 		
-		return docs;
+		//从文件缓存或内存缓存获取所有文档。
+		List<Document> allDocs = loadDocunentsFromCache(queryAddr);
+		if(allDocs.isEmpty()) {
+			String message = queryAddr.getProvince().getName() + queryAddr.getCity().getName();
+			if(!(RegionType.CityLevelDistrict==queryAddr.getDistrict().getType()))
+				message = message + queryAddr.getDistrict().getName();
+			throw new NoHistoryDataException(message);
+		}
+		
+		//为词条计算特征值
+		Document queryDoc = analyse(queryAddr);
+		query.setQueryAddr(queryAddr);
+		query.setQueryDoc(queryDoc);
+		
+		//对应地址库中每条地址计算相似度，并保留相似度最高的topN条地址
+		double similarity=0;
+		for(Document doc : allDocs){
+			similarity = computeDocSimilarity(query, doc, topN, explain);
+			if(topN==1 && similarity==1) break;
+		}
+		
+		//按相似度从高到低排序
+		if(topN>1) query.sortSimilarDocs();
+		
+		if(LOG.isInfoEnabled()){
+			LOG.info("[simi-addr] " + addressText);
+			if(query.getSimilarDocs()==null)
+				LOG.info("[simi-addr]    NONE");
+			else{
+				for(SimilarDoccument simiDoc : query.getSimilarDocs()){
+					LOG.info("[simi-addr]    " + simiDoc.getSimilarity() + ": " + simiDoc.getDocument().toString());
+				}
+			}
+		}
+		
+		return query;
 	}
-	
+
 	/**
 	 * 分词，设置词条权重。
 	 * @param addr
@@ -156,6 +201,23 @@ public class SimilarityComputer {
 		
 		return doc;
 	}
+	
+	/**
+	 * 分词，设置词条权重。
+	 * @param addresses
+	 * @return
+	 */
+	public List<Document> analyse(List<AddressEntity> addresses){
+		if(addresses==null || addresses.isEmpty()) return null;
+		
+		List<Document> docs = new ArrayList<Document>(addresses.size());
+		for(AddressEntity addr : addresses){
+			docs.add(analyse(addr));
+		}
+		
+		return docs;
+	}
+	
 	
 	/**
 	 * 为所有文档的全部词条统计逆向引用情况。
@@ -375,72 +437,6 @@ public class SimilarityComputer {
 		doc.setTerms(terms);
 		
 		return doc;
-	}
-	
-	
-	
-	
-	/**
-	 * 搜索相似地址。
-	 * @param addressText 详细地址文本，开头部分必须包含省、市、区。
-	 * @param topN 返回多少条最相似地址。
-	 */
-	public Query findSimilarAddress(String addressText, int topN, boolean explain){
-		Query query = new Query(topN); 
-		
-		//解析地址
-		if(addressText==null || addressText.trim().isEmpty())
-			throw new IllegalArgumentException("Null or empty address text! Please provider a valid address.");
-		AddressEntity queryAddr = interpreter.interpret(addressText);
-		if(queryAddr==null){
-			LOG.warn("[addr] [find-similar] [addr-err] null << " + addressText);
-			throw new RuntimeException("Can't interpret address!");
-		}
-		if(!queryAddr.hasProvince() || !queryAddr.hasCity() || !queryAddr.hasDistrict()){
-			LOG.warn("[addr] [find-similar] [addr-err] "
-					+ (queryAddr.hasProvince() ? queryAddr.getProvince().getName() : "X") + "-"
-					+ (queryAddr.hasCity() ? queryAddr.getCity().getName() : "X") + "-"
-					+ (queryAddr.hasDistrict() ? queryAddr.getDistrict().getName() : "X")
-					+ " << " + addressText);
-			throw new RuntimeException("Can't interpret address, invalid province, city or county name!");
-		}
-		
-		//从文件缓存或内存缓存获取所有文档。
-		List<Document> allDocs = loadDocunentsFromCache(queryAddr);
-		if(allDocs.isEmpty()) {
-			String message = queryAddr.getProvince().getName() + queryAddr.getCity().getName();
-			if(!(RegionType.CityLevelDistrict==queryAddr.getDistrict().getType()))
-				message = message + queryAddr.getDistrict().getName();
-			throw new NoHistoryDataException(message);
-		}
-		
-		//为词条计算特征值
-		Document queryDoc = analyse(queryAddr);
-		query.setQueryAddr(queryAddr);
-		query.setQueryDoc(queryDoc);
-		
-		//对应地址库中每条地址计算相似度，并保留相似度最高的topN条地址
-		double similarity=0;
-		for(Document doc : allDocs){
-			similarity = computeDocSimilarity(query, doc, topN, explain);
-			if(topN==1 && similarity==1) break;
-		}
-		
-		//按相似度从高到低排序
-		if(topN>1) query.sortSimilarDocs();
-		
-		if(LOG.isInfoEnabled()){
-			LOG.info("[simi-addr] " + addressText);
-			if(query.getSimilarDocs()==null)
-				LOG.info("[simi-addr]    NONE");
-			else{
-				for(SimilarDoccument simiDoc : query.getSimilarDocs()){
-					LOG.info("[simi-addr]    " + simiDoc.getSimilarity() + ": " + simiDoc.getDocument().toString());
-				}
-			}
-		}
-		
-		return query;
 	}
 	
 	/**
