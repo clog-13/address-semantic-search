@@ -119,7 +119,7 @@ public class AddressPersister implements ApplicationContextAware {
 				if(count % batchSize == 0) {
 					long dbStart = System.currentTimeMillis();
 					imported += this.addressDao.batchCreate(batch);
-					batch = new ArrayList<AddressEntity>(batchSize);
+					batch = new ArrayList<>(batchSize);
 					this.timeDb += System.currentTimeMillis() - dbStart;
 					
 					if(count % 40000 == 0 && LOG.isInfoEnabled())

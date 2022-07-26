@@ -61,20 +61,20 @@ import com.rrs.rd.address.persist.RegionType;
 public class RegionInterpreterVisitor implements TermIndexVisitor {
 	private final static Logger LOG = LoggerFactory.getLogger(RegionInterpreterVisitor.class);
 	
-	private static boolean isDebug = false;
+	private static final boolean isDebug = false;
 	private static Set<Character> ambiguousChars = null;
 	
 	private AddressPersister persister = null;
 	
 	private int currentLevel = 0, deepMostLevel = 0, currentPos = -1, deepMostPos = -1;
 	private int fullMatchCount = 0, deepMostFullMatchCount = 0;
-	private Division deepMostDivision = new Division();
-	private Division curDivision = new Division();
-	private Stack<TermIndexItem> stack = new Stack<TermIndexItem>(); 
+	private final Division deepMostDivision = new Division();
+	private final Division curDivision = new Division();
+	private final Stack<TermIndexItem> stack = new Stack<>();
 	
 
 	static {
-		ambiguousChars = new HashSet<Character>();
+		ambiguousChars = new HashSet<>();
 		ambiguousChars.add('市');
 		ambiguousChars.add('县');
 		ambiguousChars.add('区');

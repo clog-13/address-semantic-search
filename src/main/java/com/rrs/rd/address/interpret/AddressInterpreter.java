@@ -196,7 +196,7 @@ public class AddressInterpreter {
 		if(addrTextList==null) return null;
 		long start = System.currentTimeMillis();
 		int numSuccess=0, numFail=0;
-		List<AddressEntity> addresses = new ArrayList<AddressEntity>(addrTextList.size());
+		List<AddressEntity> addresses = new ArrayList<>(addrTextList.size());
 		for(String addrText : addrTextList){
 			try{
 				if(addrText==null || addrText.trim().isEmpty()) continue;
@@ -387,7 +387,7 @@ public class AddressInterpreter {
 		
 		return removed;
 	}
-	
+
 	public String extractBrackets(AddressEntity addr){
 		if(addr.getText().length()<=0) return null;
 		//将地址中括号括起来的部分提取出来，例如：

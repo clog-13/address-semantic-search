@@ -19,7 +19,6 @@ import org.slf4j.LoggerFactory;
 import com.rrs.rd.address.TermType;
 import com.rrs.rd.address.interpret.AddressInterpreter;
 import com.rrs.rd.address.persist.AddressEntity;
-import com.rrs.rd.address.persist.RegionEntity;
 import com.rrs.rd.address.persist.RegionType;
 import com.rrs.rd.address.similarity.segment.SimpleSegmenter;
 import com.rrs.rd.address.utils.StringUtil;
@@ -67,18 +66,18 @@ import com.rrs.rd.address.utils.StringUtil;
 public class SimilarityComputer {
 	private final static Logger LOG = LoggerFactory.getLogger(SimilarityComputer.class);
 	
-	private static String DEFAULT_CACHE_FOLDER = "~/.vector_cache";
-	private static double BOOST_M = 1; //正常权重
-	private static double BOOST_L = 2; //加权高值
-	private static double BOOST_XL = 4; //加权高值
-	private static double BOOST_S = 0.5; //降权
-	private static double BOOST_XS = 0.25; //降权
+	private static final String DEFAULT_CACHE_FOLDER = "~/.vector_cache";
+	private static final double BOOST_M = 1; //正常权重
+	private static final double BOOST_L = 2; //加权高值
+	private static final double BOOST_XL = 4; //加权高值
+	private static final double BOOST_S = 0.5; //降权
+	private static final double BOOST_XS = 0.25; //降权
 	
-	private static double MISSING_IDF = 4;
+	private static final double MISSING_IDF = 4;
 	
 	private AddressInterpreter interpreter = null;
 	private Segmenter segmenter = new SimpleSegmenter();
-	private List<String> defaultTokens = new ArrayList<String>(0);
+	private List<String> defaultTokens = new ArrayList<>(0);
 	private String cacheFolder;
 	private boolean cacheVectorsInMemory = false;
 	private static Map<String, List<Document>> VECTORS_CACHE = new HashMap<String, List<Document>>();
@@ -116,7 +115,7 @@ public class SimilarityComputer {
 			tokens = segmenter.segment(addr.getText());
 		}
 		
-		List<Term> terms = new ArrayList<Term>(tokens.size()+4);
+		List<Term> terms = new ArrayList<>(tokens.size()+4);
 		
 		//2. 生成term
 		if(addr.hasTown()) {
@@ -141,7 +140,7 @@ public class SimilarityComputer {
 		
 		//2.2 地址文本分词后的token
 		for(String token : tokens)
-			addTerm(token, TermType.Text, terms, null);
+			addTerm(token, TermType.Text, terms);
 		
 		Map<String, Double> idfs = IDF_CACHE.get(this.buildCacheKey(addr));
 		if(idfs!=null){
@@ -686,7 +685,7 @@ public class SimilarityComputer {
 				+ docs.size() + " docs, elapsed " + (System.currentTimeMillis() - start)/1000.0 + "s.");
 	}
 	
-	private Term addTerm(String text, TermType type, List<Term> terms, RegionEntity region){
+	private Term addTerm(String text, TermType type, List<Term> terms){
 		if(text==null || text.isEmpty()) return null;
 		String termText = text;
 		for(Term term : terms){
