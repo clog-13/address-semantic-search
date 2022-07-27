@@ -63,7 +63,7 @@ public class AddressInterpreter {
 	private static final Pattern P_ROAD = Pattern.compile("^(?<road>([\u4e00-\u9fa5]{2,4}(路|街坊|街|道|大街|大道)))(?<ex>[甲乙丙丁])?(?<roadnum>[0-9０１２３４５６７８９一二三四五六七八九十]+(号院|号楼|号大院|号|號|巷|弄|院|区|条|\\#院|\\#))?");
 	
 	static{
-		invalidTownFollowings = new HashSet<String>();
+		invalidTownFollowings = new HashSet<>();
 		invalidTownFollowings.add("政府");
 		invalidTownFollowings.add("大街");
 		invalidTownFollowings.add("大道");
@@ -80,7 +80,7 @@ public class AddressInterpreter {
 		invalidTownFollowings.add("政局");
 		invalidTownFollowings.add("企局");
 		
-		invalidTown = new HashSet<String>();
+		invalidTown = new HashSet<>();
 		invalidTown.add("新村");
 		invalidTown.add("外村");
 		invalidTown.add("大村");
@@ -164,8 +164,6 @@ public class AddressInterpreter {
 		invalidTown.add("河镇");
 		invalidTown.add("村镇");
 		
-		invalidTown.add("");
-		invalidTown.add("");
 		invalidTown.add("");
 	}
 	

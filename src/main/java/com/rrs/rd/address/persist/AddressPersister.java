@@ -30,8 +30,6 @@ public class AddressPersister implements ApplicationContextAware {
 	private AddressDao addressDao;
 	private RegionDao regionDao;
 	
-	private static Set<String> PROVINCE_LEVEL_CITIES = new HashSet<String>(8);
-	
 	/**
 	 * REGION_TREE为中国国家区域对象，全国所有行政区域都以树状结构加载到REGION_TREE
 	 * ，通过{@link RegionEntity#getChildren()}获取下一级列表
@@ -45,18 +43,7 @@ public class AddressPersister implements ApplicationContextAware {
 	
 	private static Set<Integer> ADDRESS_INDEX_BY_HASH = null;
 	private static boolean ADDRESS_INDEX_BY_HASH_CREATED = false;
-	
-	static{
-		PROVINCE_LEVEL_CITIES.add("北京");
-		PROVINCE_LEVEL_CITIES.add("北京市");
-		PROVINCE_LEVEL_CITIES.add("上海");
-		PROVINCE_LEVEL_CITIES.add("上海市");
-		PROVINCE_LEVEL_CITIES.add("重庆");
-		PROVINCE_LEVEL_CITIES.add("重庆市");
-		PROVINCE_LEVEL_CITIES.add("天津");
-		PROVINCE_LEVEL_CITIES.add("天津市");
-	}
-	
+
 	//***************************************************************************************
 	// 对外提供的服务接口
 	//***************************************************************************************
@@ -67,8 +54,7 @@ public class AddressPersister implements ApplicationContextAware {
 	public static AddressPersister instance(){
 		return context.getBean(AddressPersister.class);
 	}
-	public long timeDb=0, timeCache=0, timeInter=0, timeRegion=0, timeRmRed=0
-			, timeTown=0, timeRoad=0, timeBuild=0, timeRmSpec=0, timeBrc=0;
+	public long timeDb=0;
 	
 	/**
 	 * 批量导入地址到地址库中。

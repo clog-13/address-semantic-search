@@ -8,7 +8,7 @@ import com.rrs.rd.address.TermType;
  */
 public class Term {
 	public static double ROAD_NUM_IDF = 7;
-	private TermType type;
+	private final TermType type;
 	private String text;
 	private double idf;
 	private Term ref = null;

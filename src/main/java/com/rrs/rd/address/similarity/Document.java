@@ -110,7 +110,7 @@ public class Document {
 	
 	private synchronized void buildMapCache(){
 		if(this.termsMap==null){
-			this.termsMap = new HashMap<String, Term>(this.terms.size());
+			this.termsMap = new HashMap<>(this.terms.size());
 			for(Term t : this.terms)
 				this.termsMap.put(t.getText(), t);
 		}
