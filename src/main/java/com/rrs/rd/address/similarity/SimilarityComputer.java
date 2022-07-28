@@ -414,7 +414,7 @@ public class SimilarityComputer {
 		Document doc = new Document(Integer.parseInt(t1[0]));
 		String[] t2 = t1[1].split("\\|");
 		if(t2.length<=0) return doc;
-		List<Term> terms = new ArrayList<Term>(t2.length);
+		List<Term> terms = new ArrayList<>(t2.length);
 		for(String termStr : t2){
 			if(termStr==null || termStr.isEmpty()) continue;
 			Term term = new Term(TermType.toEnum(termStr.charAt(0)), StringUtil.substring(termStr, 1));
@@ -564,7 +564,7 @@ public class SimilarityComputer {
 					docs = VECTORS_CACHE.get(cacheKey);
 					if(docs==null){
 						docs = loadDocumentsFromFileCache(cacheKey);
-						if(docs==null) docs = new ArrayList<Document>(0);
+						if(docs==null) docs = new ArrayList<>(0);
 						VECTORS_CACHE.put(cacheKey, docs);
 					}
 					
@@ -618,7 +618,7 @@ public class SimilarityComputer {
 	}
 	
 	private List<Document> loadDocumentsFromFileCache(String key){
-		List<Document> docs = new ArrayList<Document>();
+		List<Document> docs = new ArrayList<>();
 		
 		String filePath = getCacheFolder() + "/" + key + ".vt";
 		File file = new File(filePath);
