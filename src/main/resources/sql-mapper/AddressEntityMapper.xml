@@ -3,16 +3,19 @@
 <mapper namespace="com.rrs.rd.address.persist.dao.AddressDao">
 	<resultMap id="AddressEntityResult" type="com.rrs.rd.address.persist.AddressEntity">
 		<result property="id" column="id" />
+
 		<result property="province" column="province" typeHandler="com.rrs.rd.address.persist.dao.RegionPropertyTypeHandler" />
 		<result property="city" column="city" typeHandler="com.rrs.rd.address.persist.dao.RegionPropertyTypeHandler" />
 		<result property="district" column="district" typeHandler="com.rrs.rd.address.persist.dao.RegionPropertyTypeHandler" />
 		<result property="street" column="street" typeHandler="com.rrs.rd.address.persist.dao.RegionPropertyTypeHandler" />
 		<result property="town" column="town" typeHandler="com.rrs.rd.address.persist.dao.RegionPropertyTypeHandler" />
 		<result property="village" column="village" typeHandler="com.rrs.rd.address.persist.dao.RegionPropertyTypeHandler" />
+
 		<result property="text" column="text" />
 		<result property="road" column="road" />
 		<result property="roadNum" column="road_num" />
 		<result property="buildingNum" column="building_num" />
+
 		<result property="hash" column="hash" />
 		<result property="rawText" column="raw_text" />
 		<result property="prop1" column="prop1" />

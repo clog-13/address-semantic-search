@@ -75,8 +75,8 @@ public class ImportAddress {
 	private static int importAddressFile(File file, AddressPersister persister, AddressInterpreter interpreter){
 		int imported = 0;
 		
-		InputStreamReader sr = null;
-		BufferedReader br = null;
+		InputStreamReader sr;
+		BufferedReader br;
 		try {
 			sr = new InputStreamReader(new FileInputStream(file), "utf8");
 			br = new BufferedReader(sr);
@@ -86,8 +86,8 @@ public class ImportAddress {
 			return imported;
 		}
 		
-		String line = null;
-		List<String> addrTextList = new ArrayList<String>();
+		String line;
+		List<String> addrTextList = new ArrayList<>();
 		System.out.println("> 开始导入地址库");
 		
 		RegionInterpreterVisitor visitor = new RegionInterpreterVisitor(persister);

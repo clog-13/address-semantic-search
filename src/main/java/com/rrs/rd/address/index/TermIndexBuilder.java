@@ -69,6 +69,7 @@ public class TermIndexBuilder {
 				this.indexRegions(region.getChildren(), index);
 		}
 	}
+
 	/**
 	 * 为忽略列表建立倒排索引
 	 */

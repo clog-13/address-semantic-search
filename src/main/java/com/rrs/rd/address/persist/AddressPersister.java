@@ -155,7 +155,7 @@ public class AddressPersister implements ApplicationContextAware {
 		if(towns==null) return;
 		
 		int batchSize = 2000;
-		List<RegionEntity> regions = new ArrayList<RegionEntity>(batchSize);
+		List<RegionEntity> regions = new ArrayList<>(batchSize);
 		for(Map.Entry<Long, List<String>> entry : towns.entrySet()){
 			if(entry.getKey()==null || entry.getValue()==null || entry.getValue().isEmpty()) continue;
 			RegionEntity parent = this.getRegion(entry.getKey());
@@ -213,11 +213,11 @@ public class AddressPersister implements ApplicationContextAware {
 		if(ADDRESS_INDEX_BY_HASH_CREATED) return;
 		List<AddressEntity> all = this.addressDao.findAll();
 		if(all==null){
-			ADDRESS_INDEX_BY_HASH = new HashSet<Integer>(0);
+			ADDRESS_INDEX_BY_HASH = new HashSet<>(0);
 			ADDRESS_INDEX_BY_HASH_CREATED = true;
 			return;
 		}
-		ADDRESS_INDEX_BY_HASH = new HashSet<Integer>(all.size());
+		ADDRESS_INDEX_BY_HASH = new HashSet<>(all.size());
 		for(AddressEntity addr : all) {
 			ADDRESS_INDEX_BY_HASH.add(addr.getHash());
 		}
@@ -236,7 +236,7 @@ public class AddressPersister implements ApplicationContextAware {
 		Date start = new Date();
 		
 		REGION_TREE = this.regionDao.findRoot();
-		REGION_CACHE = new HashMap<Long, RegionEntity>();
+		REGION_CACHE = new HashMap<>();
 		REGION_CACHE.put(REGION_TREE.getId(), REGION_TREE);
 		this.loadRegionChildren(REGION_TREE);
 		REGION_LOADED = true;

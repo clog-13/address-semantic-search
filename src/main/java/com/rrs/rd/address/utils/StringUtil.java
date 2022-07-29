@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 public final class StringUtil {
-	private static Map<String, Set<Character>> REPLACE_CHARS_CACHE = new HashMap<String, Set<Character>>();
+	private static Map<String, Set<Character>> REPLACE_CHARS_CACHE = new HashMap<>();
 	
 	/**
 	 * 删除text中包含的任意chars字符。
@@ -296,7 +296,7 @@ public final class StringUtil {
 			cs = REPLACE_CHARS_CACHE.get(key);
 			if(cs!=null) return cs;
 			
-			cs = new HashSet<Character>(chars.length);
+			cs = new HashSet<>(chars.length);
 			for(int i=0; i<chars.length; i++){
 				cs.add(chars[i]);
 			}
