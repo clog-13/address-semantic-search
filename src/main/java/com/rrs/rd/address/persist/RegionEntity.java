@@ -102,14 +102,7 @@ public class RegionEntity implements Serializable {
         this.type = value;
     }
 
-    public String getZip() {
-        return this.zip;
-    }
 
-    public void setZip(String value) {
-        this.zip = value;
-    }
-    
     public List<RegionEntity> getChildren(){
     	return this.children;
     }

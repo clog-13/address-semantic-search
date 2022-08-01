@@ -23,12 +23,12 @@ public class IKAnalyzerSegmenter implements Segmenter {
 
 	@Override
 	public List<String> segment(String text) {
-		List<String> r = new ArrayList<String>();
+		List<String> r = new ArrayList<>();
 		StringReader reader = new StringReader(text);
 		//TODO: 通过参数ture、false设置是否使用IKAnalyzer的智能分词
 		IKSegmenter ik = new IKSegmenter(reader, true);
 		try {
-            Lexeme lexeme = null;
+            Lexeme lexeme;
             while((lexeme=ik.next())!=null) {			
                 r.add(lexeme.getLexemeText());
             }
