@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.rrs.rd.address.TermType;
 import com.rrs.rd.address.utils.StringUtil;
 
 /**
@@ -22,7 +21,7 @@ public class TermIndexEntry {
 		if(text==null || text.isEmpty() || pos<0 || pos>=text.length()) return;
 		
 		char c = text.charAt(pos);
-		if(this.children==null) this.children = new HashMap<Character, TermIndexEntry>(1);
+		if(this.children==null) this.children = new HashMap<>(1);
 		
 		TermIndexEntry entry = this.children.get(c);
 		if(entry==null) {
@@ -49,15 +48,11 @@ public class TermIndexEntry {
 	public List<TermIndexItem> getItems(){
 		return this.items;
 	}
-	public TermIndexEntry addItem(TermIndexItem item){
-		if(this.items==null) this.items = new ArrayList<TermIndexItem>(1);
+	public void addItem(TermIndexItem item){
+		if(this.items==null) this.items = new ArrayList<>(1);
 		this.items.add(item);
-		return this;
 	}
-	public TermIndexEntry addItem(TermType type, Object value){
-		return this.addItem(new TermIndexItem(type, value));
-	}
-	
+
 	public Map<Character, TermIndexEntry> getChildren(){
 		return this.children;
 	}

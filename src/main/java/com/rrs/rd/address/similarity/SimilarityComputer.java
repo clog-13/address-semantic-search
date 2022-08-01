@@ -123,7 +123,7 @@ public class SimilarityComputer {
 		query.setQueryDoc(queryDoc);
 		
 		//对应地址库中每条地址计算相似度，并保留相似度最高的topN条地址
-		double similarity=0;
+		double similarity;
 		for(Document doc : allDocs){
 			similarity = computeDocSimilarity(query, doc, topN, explain);
 			if(topN==1 && similarity==1) break;
@@ -189,7 +189,7 @@ public class SimilarityComputer {
 		
 		Map<String, Double> idfs = IDF_CACHE.get(this.buildCacheKey(addr));
 		if(idfs!=null){
-			Double idf = null;
+			Double idf;
 			for(Term t : terms){
 				idf = idfs.get(generateIDFCacheEntryKey(t));
 				if(idf==null) t.setIdf(MISSING_IDF);
@@ -210,7 +210,7 @@ public class SimilarityComputer {
 	public List<Document> analyse(List<AddressEntity> addresses){
 		if(addresses==null || addresses.isEmpty()) return null;
 		
-		List<Document> docs = new ArrayList<Document>(addresses.size());
+		List<Document> docs = new ArrayList<>(addresses.size());
 		for(AddressEntity addr : addresses){
 			docs.add(analyse(addr));
 		}
@@ -227,7 +227,7 @@ public class SimilarityComputer {
 	private Map<String, Integer> statInverseDocRefers(List<Document> docs){
 		Map<String, Integer> idrc = new HashMap<String, Integer>(); 
 		if(docs==null) return idrc;
-		String key = null;
+		String key;
 		for(Document doc : docs) {
 			if(doc.getTerms()==null) continue;
 			for(Term term : doc.getTerms()){
@@ -446,7 +446,7 @@ public class SimilarityComputer {
 	 * @return
 	 */
 	public double computeDocSimilarity(Query query, Document doc, int topN, boolean explain){
-		Term dterm = null;
+		Term dterm;
 		//=====================================================================
 		//计算text类型词条的稠密度、匹配率
 		//1. Text类型词条匹配情况
@@ -551,7 +551,7 @@ public class SimilarityComputer {
 		String cacheKey = buildCacheKey(address);
 		if(cacheKey==null) return null;
 		
-		List<Document> docs = null;
+		List<Document> docs;
 		if(!cacheVectorsInMemory){
 			//从文件读取
 			docs = loadDocumentsFromFileCache(cacheKey);
@@ -575,7 +575,7 @@ public class SimilarityComputer {
 							idfs = IDF_CACHE.get(cacheKey);
 							if(idfs==null){
 								Map<String, Integer> termReferences = statInverseDocRefers(docs);
-								idfs = new HashMap<String, Double>(termReferences.size());
+								idfs = new HashMap<>(termReferences.size());
 								for(Map.Entry<String, Integer> entry : termReferences.entrySet()){
 									double idf = 0; 
 									//纯数字或字母组成
@@ -627,7 +627,7 @@ public class SimilarityComputer {
 			FileInputStream fsr = new FileInputStream(file);
             InputStreamReader sr = new InputStreamReader(fsr, "utf8");
             BufferedReader br = new BufferedReader(sr);
-            String line = null;
+            String line;
             while((line = br.readLine()) != null){
                 Document doc = deserialize(line);
                 if(doc==null) continue;
@@ -681,15 +681,14 @@ public class SimilarityComputer {
 				+ docs.size() + " docs, elapsed " + (System.currentTimeMillis() - start)/1000.0 + "s.");
 	}
 	
-	private Term addTerm(String text, TermType type, List<Term> terms){
-		if(text==null || text.isEmpty()) return null;
+	private void addTerm(String text, TermType type, List<Term> terms){
+		if(text==null || text.isEmpty()) return;
 		String termText = text;
 		for(Term term : terms){
-			if(term.getText().equals(termText)) return term;
+			if(term.getText().equals(termText)) return;
 		}
 		Term newTerm = new Term(type, termText);
 		terms.add(newTerm);
-		return newTerm;
 	}
 	
 	public void setCacheVectorsInMemory(boolean value){

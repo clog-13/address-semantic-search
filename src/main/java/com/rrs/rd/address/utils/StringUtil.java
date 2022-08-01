@@ -33,28 +33,7 @@ public final class StringUtil {
 		if(removed) return sb.toString();
 		else return text;
 	}
-	
-	/**
-	 * 删除text中包含的toRemoved字符串
-	 * @param text
-	 * @param toBeRemoved 待删除的字符串
-	 * @return
-	 */
-	public static String remove(String text, String toBeRemoved){
-		if(text==null || text.length()<=0 || toBeRemoved==null || toBeRemoved.length()<=0)
-			return text;
-		for(int i=0; i<text.length()-1; ){
-			String str = text.substring(i);
-			if(!str.startsWith(toBeRemoved)) {
-				i++;
-				continue;
-			}
-			text = (i==0 ? "" : text.substring(0, i)) 
-					+ (i+toBeRemoved.length()>=text.length() ? "" : text.substring(i+toBeRemoved.length(), text.length()));
-			continue;
-		}
-		return text;
-	}
+
 	
 	/**
 	 * 取字符串尾部length个字符的子串。
@@ -136,19 +115,6 @@ public final class StringUtil {
 	 * @param chars
 	 * @return
 	 */
-	public static String ltrim(String text, char... chars){
-		return trim(text, true, false, chars);
-	}
-	
-	/**
-	 * 右侧删除字符串text的特定字符(包含在chars中的字符)。
-	 * @param text
-	 * @param chars
-	 * @return
-	 */
-	public static String rtrim(String text, char... chars){
-		return trim(text, false, true, chars);
-	}
 	
 	/**
 	 * 两侧删除字符串text的特定字符(包含在chars中的字符)。

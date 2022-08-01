@@ -80,7 +80,7 @@ public class Query {
 	public boolean addSimiDoc(Document doc, double similarity){
 		if(similarity<=0) return false;
 		if(this.simiDocs==null) {
-			this.simiDocs = new ArrayList<SimilarDoccument>(this.topN);
+			this.simiDocs = new ArrayList<>(this.topN);
 			SimilarDoccument simiDoc = new SimilarDoccument(doc);
 			simiDoc.setSimilarity(similarity);
 			this.simiDocs.add(simiDoc);

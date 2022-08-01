@@ -78,26 +78,7 @@ public class TermIndexBuilder {
 		for(String str : ignoreList)
 			this.indexRoot.buildIndex(str, 0, new TermIndexItem(TermType.Ignore, null));
 	}
-	private TermType convertRegionType(RegionEntity region){
-		switch(region.getType()){
-			case Province:
-			case ProvinceLevelCity1:
-				return TermType.Province;
-			case City:
-			case ProvinceLevelCity2:
-				return TermType.City;
-			case District: 
-			case CityLevelDistrict:
-				return TermType.District;
-			case PlatformL4: return TermType.Street;
-			case Town: return TermType.Town;
-			case Village: return TermType.Village;
-			case Street: 
-				return region.isTown() ? TermType.Town : TermType.Street;
-			default:
-		}
-		return TermType.Undefined;
-	}
+
 	
 	public void deepMostQuery(String text, TermIndexVisitor visitor){
 		if(text==null || text.isEmpty()) return;
@@ -137,4 +118,25 @@ public class TermIndexBuilder {
 		if(pos==text.length()-1) return entry.getItems();
 		return fullMatch(text, pos+1, entry.getChildren());
 	}
+	private TermType convertRegionType(RegionEntity region){
+		switch(region.getType()){
+			case Province:
+			case ProvinceLevelCity1:
+				return TermType.Province;
+			case City:
+			case ProvinceLevelCity2:
+				return TermType.City;
+			case District:
+			case CityLevelDistrict:
+				return TermType.District;
+			case PlatformL4: return TermType.Street;
+			case Town: return TermType.Town;
+			case Village: return TermType.Village;
+			case Street:
+				return region.isTown() ? TermType.Town : TermType.Street;
+			default:
+		}
+		return TermType.Undefined;
+	}
 }
+

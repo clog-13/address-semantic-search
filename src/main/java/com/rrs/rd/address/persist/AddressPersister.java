@@ -75,7 +75,7 @@ public class AddressPersister implements ApplicationContextAware {
 	 */
 	public int importAddresses(List<AddressEntity> addresses) throws IllegalStateException, RuntimeException {
 		int batchSize = 2000, count=0, imported = 0, duplicate = 0;
-		List<AddressEntity> batch = new ArrayList<AddressEntity>(batchSize);
+		List<AddressEntity> batch = new ArrayList<>(batchSize);
 		for(AddressEntity address : addresses){
 			try{
 				if(this.isDuplicatedAddress(address.getRawText())) {

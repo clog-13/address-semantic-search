@@ -133,7 +133,7 @@ public class RegionEntity implements Serializable {
     	String[] tokens = null;
     	if(this.getAlias()!=null && this.getAlias().trim().length()>0)
     		tokens = this.getAlias().trim().split(";");
-    	this.orderedNames = new ArrayList<String>(tokens==null || tokens.length<=0 ? 1 : tokens.length + 1);
+    	this.orderedNames = new ArrayList<>(tokens==null || tokens.length == 0 ? 1 : tokens.length + 1);
     	this.orderedNames.add(this.getName());
     	if(tokens!=null){
 	    	for(String token : tokens){
