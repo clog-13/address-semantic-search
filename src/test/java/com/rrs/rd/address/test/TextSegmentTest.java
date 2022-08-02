@@ -1,5 +1,6 @@
 package com.rrs.rd.address.test;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
@@ -12,9 +13,10 @@ import com.rrs.rd.address.similarity.segment.SmartCNSegmenter;
 
 public class TextSegmentTest {
 	private final static Logger LOG = LoggerFactory.getLogger(TextSegmentTest.class);
-	private final static HashSet<String> addresses = new HashSet<>();
+	private final static List<String> addresses = new ArrayList<>();
 	
 	static{
+		addresses.add("北京海淀区丹棱街18号创富大厦1106");
 		addresses.add("山东青岛李沧区虎山路街道北崂路993号东山峰景6号楼1单元602室");
 		addresses.add("辽宁省沈阳市沈河区东陵街道海上五月花三期302楼2-8-1号");
 		addresses.add("安徽省合肥市瑶海区长江东路8号琥珀名城和园10栋2203");
@@ -49,6 +51,6 @@ public class TextSegmentTest {
 		for(String token : tokens){
 			sb.append(token).append(' ');
 		}
-		LOG.info(">    " + sb.toString());
+		LOG.info(">    " + sb);
 	}
 }

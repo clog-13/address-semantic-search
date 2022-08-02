@@ -459,37 +459,7 @@ public class AddressInterpretTest extends TestBase {
 		removeRedundancy(interpreter, persister, "安徽省临泉县白庙镇白庙行政村刘庄37号", "白庙行政村刘庄37号"
 				, 340000, 341200, 341221, "测试-删除冗余");
 	}
-	
-	@Test
-	public void testRemoveSpecialChar(){
-		AddressInterpreter interpreter = context.getBean(AddressInterpreter.class);
-		AddressEntity addr = new AddressEntity();
-		
-		addr.setText("四川成都武侯区武侯大道铁佛段千盛百货\\/ \r\n\t对面200米金履三路288号绿地610015圣路易名邸");
-		interpreter.removeSpecialChars(addr);
-		assertEquals("四川成都武侯区武侯大道铁佛段千盛百货对面200米金履三路288号绿地圣路易名邸", addr.getText());
-	}
-	
-	
-	@Test
-	public void testExtractBracket(){
-		AddressInterpreter interpreter = context.getBean(AddressInterpreter.class);
-		AddressEntity addr = new AddressEntity();
-		
-		//测试正常抽取括号内容
-		addr.setText("()四{}川{aa}(bb)成（）都（cc）武[]侯[dd]区【】武【ee】侯<>大<ff>道〈〉铁〈gg〉佛「」段「hh」千盛百货对面200米金履三路288号绿地圣路易名邸[]");
-		String brackets = interpreter.extractBrackets(addr);
-		assertEquals("aabbccddeeffgghh", brackets);
-		assertEquals("四川成都武侯区武侯大道铁佛段千盛百货对面200米金履三路288号绿地圣路易名邸", addr.getText());
-		
-		//测试存在异常的情况
-//		addr.setText("四川成都(武[]侯区武侯大道铁佛{aa}段千】盛百货对面200米金履三【bb】路288号绿地圣路易名邸");
-//		brackets = service.extractBrackets(addr);
-//		assertEquals("aabb", brackets);
-//		assertEquals("四川成都(武侯区武侯大道铁佛段千】盛百货对面200米金履三路288号绿地圣路易名邸", addr.getText());
-	}
 
-	
 	private void removeRedundancy(AddressInterpreter interpreter, AddressPersister persister
 			, String text, String expected, int pid, int cid, int did, String title){
 		RegionInterpreterVisitor visitor = new RegionInterpreterVisitor(persister);
@@ -549,4 +519,33 @@ public class AddressInterpretTest extends TestBase {
 			} catch (IOException e) { }
 		}
 	}
+
+	@Test
+	public void testExtractBracket(){
+		AddressInterpreter interpreter = context.getBean(AddressInterpreter.class);
+		AddressEntity addr = new AddressEntity();
+
+		//测试正常抽取括号内容
+		addr.setText("()四{}川{aa}(bb)成（）都（cc）武[]侯[dd]区【】武【ee】侯<>大<ff>道〈〉铁〈gg〉佛「」段「hh」千盛百货对面200米金履三路288号绿地圣路易名邸[]");
+		String brackets = interpreter.extractBrackets(addr);
+		assertEquals("aabbccddeeffgghh", brackets);
+		assertEquals("四川成都武侯区武侯大道铁佛段千盛百货对面200米金履三路288号绿地圣路易名邸", addr.getText());
+
+		//测试存在异常的情况
+//		addr.setText("四川成都(武[]侯区武侯大道铁佛{aa}段千】盛百货对面200米金履三【bb】路288号绿地圣路易名邸");
+//		brackets = service.extractBrackets(addr);
+//		assertEquals("aabb", brackets);
+//		assertEquals("四川成都(武侯区武侯大道铁佛段千】盛百货对面200米金履三路288号绿地圣路易名邸", addr.getText());
+	}
+
+	@Test
+	public void testRemoveSpecialChar(){
+		AddressInterpreter interpreter = context.getBean(AddressInterpreter.class);
+		AddressEntity addr = new AddressEntity();
+
+		addr.setText("四川成都武侯区武侯大道铁佛段千盛百货\\/ \r\n\t对面200米金履三路288号绿地610015圣路易名邸");
+		interpreter.removeSpecialChars(addr);
+		assertEquals("四川成都武侯区武侯大道铁佛段千盛百货对面200米金履三路288号绿地圣路易名邸", addr.getText());
+	}
+
 }
